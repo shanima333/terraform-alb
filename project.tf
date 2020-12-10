@@ -501,6 +501,12 @@ resource "aws_lb" "alb1" {
   subnets            = [aws_subnet.public1.id, aws_subnet.public2.id, aws_subnet.public3.id]
   ip_address_type    = "ipv4"
 
+    access_logs {
+    bucket  = aws_s3_bucket.log.id
+    prefix  = "alb"
+    enabled = true
+  }
+
 }
 
 
@@ -674,5 +680,20 @@ variable "asg" {
   }
   lifecycle {
    create_before_destroy = true
+  }
+}
+
+
+##################################################################
+# s3 bucket
+##################################################################
+
+
+resource "aws_s3_bucket" "log" {
+  bucket = "alb-log-shani"
+  acl    = "public-read-write"
+
+  tags = {
+    Name        = "alb_log"
   }
 }
